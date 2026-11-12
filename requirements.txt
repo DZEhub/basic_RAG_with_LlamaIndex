@@ -1,3 +1,4 @@
+# LlamaIndex core library
 llama-index
 
 # OpenAI integration
