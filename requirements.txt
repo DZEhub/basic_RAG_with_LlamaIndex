@@ -1,0 +1,14 @@
+llama-index
+
+# OpenAI integration
+openai
+llama-index-llms-openai
+llama-index-embeddings-openai
+
+# Ollama integration
+ollama
+llama-index-llms-ollama
+llama-index-embeddings-ollama
+
+# Jupyter integration
+ipykernel
