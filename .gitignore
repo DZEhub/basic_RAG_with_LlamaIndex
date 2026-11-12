@@ -1,5 +1,8 @@
 *.pyc
 __pycache__/
+*.env
+env/
 .venv/
 push_*
 cmd_*
+*.code-workspace

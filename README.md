@@ -1,180 +1,168 @@
-# I) Introduction: C'est quoi le RAG (Retrieval Augmented Generation)
+# I) Introduction : qu’est-ce que le RAG (Retrieval-Augmented Generation) ?
 
-La génération augmentée par récupération (RAG) est une technique puissante qui combine des grands modèles linguistiques (LLM) avec la récupération de données en temps réel pour générer des réponses plus précises, à jour et contextuellement pertinentes.
+La génération augmentée par récupération (RAG) est une approche qui combine les grands modèles de langage (LLM) avec une récupération de données externe en temps réel, afin de produire des réponses plus précises, plus à jour et mieux contextualisées.
 
-Cette approche est particulièrement précieuse pour répondre aux questions concernant des information propriétaires, fréquemment modifiées ou spécifiques à un domaine.
+Cette méthode est particulièrement pertinente pour traiter des informations propriétaires, fréquemment mises à jour, ou fortement spécialisées par domaine.
 
-## I.1) Qu’est-ce que la génération augmentée de récupération ?
+## I.1) Qu’est-ce que la génération augmentée par récupération ?
 
-Dans sa forme la plus simple, un agent RAG effectue les opérations suivantes :
+Dans sa forme la plus simple, un système RAG exécute trois étapes :
 
-1. **Récupération** : la **requête de l'utilisateur est utilisée pour interroger une base de connaissances externe, telle qu'un magasin de vecteurs, une recherche par mots-clés ou une base de données SQL.** L'objectif est d'obtenir des données complémentaires pour la réponse du LLM.
-2. **Augmentation** : Les données d’appui sont combinées à la requête de l’utilisateur, souvent à l’aide d’un Template comportant un formatage et des instructions supplémentaires pour le LLM, afin de créer un prompt.
-3. **Génération** : l'invite est transmise au LLM pour générer une réponse à la demande de l'utilisateur.
+1. **Récupération (Retrieval)** : la requête utilisateur interroge une base de connaissances externe (vector store, recherche par mots-clés, base SQL, etc.) pour collecter le contexte utile.
+2. **Augmentation (Augmentation)** : les données récupérées sont injectées dans le prompt utilisateur avec un format et des consignes adaptés au LLM.
+3. **Génération (Generation)** : le prompt enrichi est transmis au LLM, qui produit la réponse finale.
 
-![Simple structure RAG diagram](./images/simple-rag.svg)
+![Schéma simple d’une architecture RAG](./images/simple-rag.svg)
 
 ## I.2) Avantages du RAG
 
-La RAG améliore les LLM des manières suivantes :
+Le RAG améliore les systèmes LLM sur plusieurs axes :
 
-* **Connaissances propriétaires :** La RAG peut inclure des informations propriétaires non utilisées initialement pour entraîner le LLM, telles que des mémos, des e-mails et des documents pour répondre à des questions spécifiques au domaine.
-* **Informations à jour :** une application RAG peut fournir au LLM des informations provenant d'une base de connaissances mise à jour.
-* ****Citer les sources** :** RAG permet aux LLM de citer des sources spécifiques, permettant aux utilisateurs de vérifier l'exactitude factuelle des réponses.
-* **Sécurité des données et listes de contrôle d'accès (ACL) :** L'étape de récupération peut être conçue pour récupérer sélectivement des informations personnelles ou propriétaires en fonction des informations d'identification de l'utilisateur.
+* **Connaissances propriétaires** : intégration de contenus internes (documents, e-mails, notes, référentiels métier) absents de l’entraînement initial.
+* **Informations à jour** : exploitation d’une base de connaissances régulièrement actualisée.
+* **Traçabilité des réponses** : possibilité de citer les sources, facilitant la vérification factuelle.
+* **Sécurité et contrôle d’accès (ACL)** : récupération conditionnée selon les droits de l’utilisateur.
 
 ![Les 7 avantages du RAG](./images/07_avantages_rag.png)
 
-## I.3) Composants RAG
+## I.3) Composants d’une application RAG
 
-Une application RAG typique implique plusieurs étapes :
+Une application RAG typique inclut :
 
-1. **Pipeline de données** : Prétraiter et indexer des documents, des tables ou d'autres données pour une récupération rapide et précise.
-2. **chaîne RAG (retrieval, augmentation, generation)** : appelez une série (ou chaîne) d'étapes pour :
-   * Comprendre la question de l'utilisateur.
-   * Récupérer les données de support.
-   * Augmentez le prompt avec des données d’assistance.
-   * Générez une réponse d'un LLM en utilisant l'invite augmentée.
-3. ****Évaluation et monitoring**** : évaluez l’application RAG afin de déterminer sa qualité, son coût et sa latence pour vous assurer qu’elle répond à vos exigences métier.
-4. **Gouvernance et LLMOps** : Suivez et gérez le cycle de vie de chaque composant, y compris le data lineage et les contrôles d'accès.
+1. **Pipeline de données** : préparation et indexation de documents, tables et autres sources pour une recherche fiable et rapide.
+2. **Chaîne RAG (retrieval, augmentation, generation)** :
+   * compréhension de la question,
+   * récupération du contexte pertinent,
+   * enrichissement du prompt,
+   * génération de la réponse.
+3. **Évaluation et monitoring** : mesure de la qualité, du coût et de la latence.
+4. **Gouvernance et LLMOps** : gestion du cycle de vie, lineage des données et politiques d’accès.
 
 ## I.4) Types de données RAG : structurées et non structurées
 
-L'architecture RAG peut fonctionner avec des données de support non structurées ou structurées. Les données que vous utilisez avec la RAG dépendent de votre cas d'utilisation.
+Une architecture RAG peut exploiter des données non structurées comme structurées, selon le cas d’usage.
 
-**Données non structurées :** Données sans structure ni organisation spécifique.
+**Données non structurées** :
 
 * PDF
 * Documents Google/Office
 * Wikis
 * Images
-* VIDÉOS
+* Vidéos
 
-**Données structurées :** Données tabulaires organisées en lignes et colonnes avec un schéma spécifique, telles que des tables dans une base de données.
+**Données structurées** :
 
-* Enregistrements client dans un système BI ou Data Warehouse
-* Données transactionnelles d'une base de données SQL
-* Données provenant des APIs d'applications (par ex., SAP, Salesforce, etc.)
+* Enregistrements clients dans un système BI / Data Warehouse
+* Données transactionnelles en base SQL
+* Données issues d’APIs applicatives (ex. SAP, Salesforce, etc.)
 
-![Avant et après l'application RAG](./images/avant-apres-rag.png)
+![Avant et après l’application du RAG](./images/avant-apres-rag.png)
 
-# II) Projet Demo avec le framework LlamaIndex:
+# II) Démo projet avec le framework LlamaIndex
 
-*Objectif de la demo:* **Comprendre le fontionnement de LlamaIndex et pouvoir créer un simple assistant RAG pour une documentation dans le domaine de la Robotique**
+**Objectif de la démo :** comprendre le fonctionnement de LlamaIndex et construire un assistant RAG simple appliqué à une documentation dans le domaine de la robotique.
 
-- Utiliser les fichiers build_venv.ps1 (Windows/Powershell) or build_venv.sh (Linux/Shell) pour installer et configurer votre environnement virtuel (.venv) de travail,
-- Activer environnement virtuel (.venv) et selectionner l'interpreteur python dans le jupyter notebook (*.ipynb) pour tester ce framework,
+- Utiliser `build_venv.ps1` (Windows/PowerShell) ou `build_venv.sh` (Linux/Shell) pour créer et configurer l’environnement virtuel `.venv`.
+- Activer l’environnement virtuel puis sélectionner l’interpréteur Python dans le notebook Jupyter (`*.ipynb`) pour exécuter les tests de la démo.
 
-## II.1) LlamaIndex : créer son RAG en quelques lignes de code
+## II.1) LlamaIndex : créer un RAG en quelques lignes
 
-LlamaIndex est un **framework Python open source spécialisé dans la création de systèmes RAG et d'applications basées sur les LLM.**
-**Sa promesse** : permettre de construire un pipeline RAG fonctionnel en quelques lignes de code, tout en offrant la flexibilité nécessaire pour les cas d'usage avancés.
-Là où d'autres frameworks adoptent une approche généraliste, LlamaIndex a fait le choix de l'excellence sur un périmètre précis :
-==> **connecter vos données à des modèles de langage.**
+LlamaIndex est un **framework Python open source spécialisé dans la création de systèmes RAG et d’applications basées sur les LLM**.
 
-Source: [Developer docs](https://developers.llamaindex.ai/llamaparse/)
+Sa promesse : construire un pipeline RAG opérationnel en peu de code, tout en conservant la flexibilité nécessaire pour des cas d’usage avancés.
 
-La construction d'un système RAG (Retrieval Augmented Generation) peut rapidement devenir un projet complexe :
+Son positionnement est clair : **connecter les données métier à des modèles de langage**.
 
-- gérer l'ingestion de documents,
-- leur découpage en chunks,
-- la création d'embeddings,
-- le stockage vectoriel,
-- puis orchestrer la récupération et la génération...
+Source : [Documentation développeur](https://developers.llamaindex.ai/llamaparse/)
 
-Chaque étape nécessite des choix techniques et du code d'intégration.
-Pour les équipes qui souhaitent se concentrer sur la valeur métier plutôt que sur la plomberie technique, LlamaIndex offre une alternative séduisante.
+Construire un système RAG peut rapidement devenir complexe :
 
-Dans ce repo, nous allons explorer ce qu'est LlamaIndex, comprendre son architecture et ses composants clés, et voir concrètement comment construire un RAG opérationnel en quelques minutes.
+- ingestion des documents,
+- découpage en chunks,
+- génération d’embeddings,
+- stockage vectoriel,
+- orchestration retrieval + generation.
 
-## II.2) LlamaIndex : un framework pensé pour le RAG
+Chaque étape implique des choix techniques et de l’intégration.  
+LlamaIndex réduit cette charge pour permettre aux équipes de se concentrer sur la valeur métier.
 
-LlamaIndex est né d'un constat simple :
+Dans ce repository, l’objectif est d’explorer LlamaIndex, ses composants clés, et de mettre en place un RAG fonctionnel de bout en bout.
 
-- *les LLM sont puissants mais limités par leur connaissance figée au moment de leur entraînement.*
-  Pour les rendre utiles sur des données propriétaires - documentation interne, bases de connaissances, corpus métier - il faut les augmenter avec un système de récupération.
-  ==> **C'est précisément ce que LlamaIndex facilite.**
+## II.2) LlamaIndex : un framework nativement orienté RAG
 
-Le framework s'articule autour de **cinq étapes fondamentales** qui correspondent au cycle de vie d'un système RAG :
+LlamaIndex part d’un constat simple : les LLM sont puissants, mais limités par une connaissance figée à la date d’entraînement.  
+Pour les rendre réellement utiles sur des données privées et métier, il faut un système de récupération robuste.
 
-- **Loading :** ingestion des données depuis diverses sources (fichiers, bases de données, APIs),
-- **Indexing :** structuration des données pour une recherche efficace (chunking, embeddings, stockage),
-- **Storing :** persistance des index pour éviter de recalculer à chaque utilisation,
-- **Querying :** récupération des informations pertinentes et génération de réponses,
-- **Evaluation :** mesure de la qualité du système pour l'améliorer itérativement.
+Le framework s’appuie sur **cinq étapes fondamentales** :
 
-Cette organisation reflète la philosophie de LlamaIndex :
-==> **fournir des abstractions de haut niveau pour chaque étape tout en permettant de descendre dans les détails quand nécessaire.
-Un développeur peut construire un RAG fonctionnel sans comprendre les subtilités du chunking, puis affiner progressivement chaque composant à mesure que ses besoins se précisent.
+- **Loading** : ingestion des données (fichiers, bases, APIs),
+- **Indexing** : structuration pour la recherche (chunking, embeddings, stockage),
+- **Storing** : persistance des index pour éviter les recalculs,
+- **Querying** : récupération du contexte et génération de réponse,
+- **Evaluation** : mesure et amélioration continue de la qualité.
 
-| **Composant**         | **Rôle**                              | **Exemples**                                  |
-| --------------------------- | -------------------------------------------- | --------------------------------------------------- |
-| **Data Connectors**   | Charger des données depuis diverses sources | SimpleDirectoryReader, PDFReader, NotionReader      |
-| **Documents & Nodes** | Représenter et découper les données       | Document, TextNode, ImageNode                       |
-| **Embeddings**        | Vectoriser le texte pour la recherche        | OpenAIEmbedding, HuggingFaceEmbedding               |
-| **Index**             | Structurer les données pour la requête     | VectorStoreIndex, SummaryIndex, KnowledgeGraphIndex |
-| **Retrievers**        | Récupérer les informations pertinentes     | VectorIndexRetriever, BM25Retriever                 |
-| **Query Engine**      | Orchestrer récupération et génération    | RetrieverQueryEngine                                |
+Cette organisation reflète la philosophie de LlamaIndex : fournir des abstractions haut niveau, tout en laissant la main sur les réglages fins si nécessaire.
 
-La force de LlamaIndex réside dans ses **connecteurs de données** qui couvrent un spectre impressionnant de sources :
+| **Composant**         | **Rôle**                                    | **Exemples**                                  |
+| --------------------- | ------------------------------------------- | --------------------------------------------- |
+| **Data Connectors**   | Charger des données depuis plusieurs sources | SimpleDirectoryReader, PDFReader, NotionReader |
+| **Documents & Nodes** | Représenter et découper les données          | Document, TextNode, ImageNode                 |
+| **Embeddings**        | Vectoriser le texte pour la recherche        | OpenAIEmbedding, HuggingFaceEmbedding         |
+| **Index**             | Structurer les données pour la requête       | VectorStoreIndex, SummaryIndex, KnowledgeGraphIndex |
+| **Retrievers**        | Récupérer les informations pertinentes       | VectorIndexRetriever, BM25Retriever           |
+| **Query Engine**      | Orchestrer récupération et génération        | RetrieverQueryEngine                          |
 
-- fichiers locaux (PDF, Word, HTML, Markdown),
-- bases de données (PostgreSQL, MongoDB),
-- services cloud (Google Drive, Notion, Slack),
-- et même des APIs web.
+La force de LlamaIndex repose aussi sur ses connecteurs : fichiers locaux, bases de données, services cloud et APIs web.
 
-Cette richesse permet d'intégrer rapidement des données existantes sans développement spécifique.
+## II.3) LlamaIndex vs LangChain : quelles différences ?
 
-## **II.3) LlamaIndex vs LangChain : quelles différences ?**
+La comparaison avec [LangChain](https://blent.ai/blog/a/langchain-framework-llm) est naturelle : les deux frameworks traitent des problématiques proches, mais avec un positionnement différent.
 
-La comparaison avec [LangChain](https://blent.ai/blog/a/langchain-framework-llm) est inévitable car les deux frameworks adressent des problématiques similaires. Comprendre leurs différences permet de choisir l'outil le plus adapté à chaque projet.
+- **LangChain** suit une approche généraliste : très flexible pour construire des applications LLM variées, mais plus exigeante en assemblage pour un RAG.
+- **LlamaIndex** est spécialisé dans la connexion données ↔ LLM : expérience plus directe pour les projets RAG, avec moins de code d’orchestration.
 
-- **LangChain** adopte une approche **généraliste** : c'est une boîte à outils complète pour construire des applications LLM de toute nature. Son abstraction centrale, la "chain", permet de composer des séquences d'opérations arbitraires. Cette flexibilité a un coût : la courbe d'apprentissage est plus raide, et construire un RAG nécessite d'assembler manuellement plusieurs composants.
-- **LlamaIndex** est **spécialisé** dans la connexion de données aux LLM. Son abstraction centrale, l'index, est optimisée pour ce cas d'usage précis. Cette spécialisation se traduit par une expérience plus fluide pour les projets RAG : moins de code boilerplate, des défauts sensés, et une documentation focalisée.
+| Critère                     | LlamaIndex                        | LangChain                                  |
+| -------------------------- | ---------------------------------- | ------------------------------------------ |
+| Focus principal            | RAG et indexation de données       | Applications LLM généralistes              |
+| Courbe d’apprentissage     | Rapide pour le RAG                 | Plus raide, plus de concepts               |
+| Lignes de code (RAG basique) | ~5 lignes                        | ~15-20 lignes                              |
+| Connecteurs de données     | Très riche (150+)                  | Moins exhaustif                            |
+| Agents et workflows        | Supportés mais secondaires         | Point fort historique                      |
+| Écosystème                 | LlamaHub pour les extensions       | LangChain Hub, nombreuses intégrations     |
 
-| Critère                     | LlamaIndex                    | LangChain                               |
-| ---------------------------- | ----------------------------- | --------------------------------------- |
-| Focus principal              | RAG et indexation de données | Applications LLM génériques           |
-| Courbe d'apprentissage       | Douce pour le RAG             | Plus raide, plus de concepts            |
-| Lignes de code (RAG basique) | ~5 lignes                     | ~15-20 lignes                           |
-| Connecteurs de données      | Très riche (150+)            | Moins exhaustif                         |
-| Agents et workflows          | Supportés mais secondaires   | Point fort historique                   |
-| Écosystème                 | LlamaHub pour les extensions  | LangChain Hub, intégrations nombreuses |
+En pratique, ces frameworks sont complémentaires : LlamaIndex peut gérer indexation/récupération, puis LangChain orchestrer des workflows plus complexes.
 
-En pratique, les deux frameworks ne sont pas mutuellement exclusifs. De nombreux projets utilisent LlamaIndex pour la partie indexation et récupération, puis LangChain pour l'orchestration de workflows plus complexes. LlamaIndex propose d'ailleurs des intégrations natives avec LangChain pour faciliter cette complémentarité.
+## II.4) Informations complémentaires
 
-Le choix dépend de votre cas d'usage :
+### a) Installation des skills et des plugins
 
-* **Projet centré sur le RAG** avec des besoins d'indexation complexes → LlamaIndex
-* **Application LLM diverse** avec agents, chaînes de prompts, intégrations multiples → LangChain
-* **Prototype rapide** pour valider une approche RAG → LlamaIndex (moins de friction initiale)
+Un **skill** est une capacité autonome chargée à la demande par un agent.  
+LlamaParse propose notamment :
 
-## II.4) Infos supplémentaires:
+* **`llamaparse`** — parsing de documents non structurés et extraction de texte via [Parse](https://developers.llamaindex.ai/llamaparse/parse/getting_started/).  
+  Gère PDF, présentations, documents Word, tableurs et images, y compris des documents complexes (tableaux, graphiques).  
+  Pré-requis : `LLAMA_CLOUD_API_KEY` (voir le [guide API Key](https://developers.llamaindex.ai/llamaparse/general/api_key/)), Node 18+, npm, et éventuellement `@llamaindex/llama-cloud`.
+* **`liteparse`** — parsing local-first rapide, conversion de documents et extraction spatiale de texte.  
+  Optimisé pour les PDF et documents textuels denses ; fonctionne localement sans clé API.  
+  Pré-requis : Node 18+, npm, package global `@llamaindex/liteparse` ; support Office via LibreOffice, support image via ImageMagick.
 
-### a) Installing skills and plugins:
+Installer les deux skills depuis le [repository skills](https://github.com/run-llama/llamaparse-agent-skills) avec la CLI [`skills`](https://www.npmjs.com/package/skills) :
 
-A skill is a self-contained capability an agent loads on demand. LlamaParse provides two:
-
-* **`llamaparse`** — unstructured document parsing and text extraction powered by [Parse](https://developers.llamaindex.ai/llamaparse/parse/getting_started/). Handles PDFs, presentations, Word documents, spreadsheets, and images, and is built for complex documents with charts and tables that need sophisticated extraction. Requires a `LLAMA_CLOUD_API_KEY` (see the [API Key guide](https://developers.llamaindex.ai/llamaparse/general/api_key/)), Node 18+, and npm; it can use the `@llamaindex/llama-cloud` package.
-* **`liteparse`** — local-first, fast document parsing, conversion, and spatial text extraction. Prioritizes speed for PDFs and text-dense documents with tables and images, and runs entirely locally with no API key. Requires Node 18+, npm, and the globally installed `@llamaindex/liteparse` package; Office support additionally needs LibreOffice, and image support needs ImageMagick.
-
-Install both skills from the [skills repository](https://github.com/run-llama/llamaparse-agent-skills) with the [`skills` CLI](https://www.npmjs.com/package/skills):
-
-```Shell
+```shell
 npx skills add run-llama/llamaparse-agent-skills
 ```
 
-To install a single skill, pass `--skill`:
+Installer un skill unique :
 
-```Shell
+```shell
 npx skills add run-llama/llamaparse-agent-skills --skill llamaparse
 ```
 
-Alternatively, download the `.zip` from the repository’s GitHub Releases.
+Alternative : téléchargement du fichier `.zip` depuis les Releases GitHub du repository.
 
-for Plugins, see [Documentation](https://developers.llamaindex.ai/llamaparse/for-agents/skills/#plugins)
+Pour les plugins, consulter la [documentation officielle](https://developers.llamaindex.ai/llamaparse/for-agents/skills/#plugins).
 
-### b) Installing MCP:
+### b) Installation MCP
 
-* [LlamaParse MCP](https://developers.llamaindex.ai/llamaparse/for-agents/mcp/) — connect any MCP-compatible client to the platform without installing a skill.
-* [LlamaParse Platform n8n Node](https://developers.llamaindex.ai/llamaparse/for-agents/integrations/n8n/) — build document pipelines without code.
+* [LlamaParse MCP](https://developers.llamaindex.ai/llamaparse/for-agents/mcp/) — connecter n’importe quel client compatible MCP à la plateforme, sans installer de skill.
+* [LlamaParse Platform n8n Node](https://developers.llamaindex.ai/llamaparse/for-agents/integrations/n8n/) — créer des pipelines documentaires sans code.

@@ -13,3 +13,7 @@ llama-index-embeddings-ollama
 
 # Jupyter integration
 ipykernel
+
+# Others
+python-dotenv
+tqdm
